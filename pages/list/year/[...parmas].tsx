@@ -1,9 +1,7 @@
 import Category from '@/components/yearList/Category';
 import YearList from '@/components/yearList/YearList';
 import { Movie } from '@/utils/type/MovieType';
-import { GetServerSidePropsContext } from 'next';
-import { ParsedUrlQuery } from 'querystring';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 interface YearMainProps {
@@ -49,34 +47,31 @@ const WrapperBlock = styled.div`
   }
 `;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-) => {
-  const params: ParsedUrlQuery | undefined = context.params;
+export const getServerSideProps = async (context: any) => {
+  const params = context.params.parmas;
 
-  //params가 undefined인지 확인하고, 해당 경우 기본값인 year와 idx를 설정
-  let year = '2020';
+  const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY_AUTH;
+  // params가 undefined인지 확인하고, 해당 경우 기본값인 year와 idx를 설정
+  let year = new Date().getFullYear().toString();
   let idx = '1';
-
-  if (params && params.parmas) {
-    // params.parmas가 존재하고 배열인지 여부를 확인하고, 값에 접근하여 year와 idx 변수를 설정
-    const paramArray = Array.isArray(params.parmas)
-      ? params.parmas
-      : [params.parmas];
-    year = paramArray[0] as string;
-    idx = paramArray[1] ? (paramArray[1] as string) : '1';
+  if (params[0]) {
+    year = params[0];
   }
 
+  if (params[1]) {
+    idx = params[1];
+  }
   const response = await fetch(
-    `https://movie-dog.vercel.app/api/movie/${year}/${idx}`,
+    `https://main.drpe221ejddia.amplifyapp.com/api/movie/${year}/${idx}`,
   );
+
   const { results } = await response.json();
 
   return {
     props: {
       data: results,
-      year: year,
-      idx: idx,
+      year,
+      idx,
     },
   };
 };

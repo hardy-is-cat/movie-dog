@@ -2,7 +2,7 @@
 
 React + Next.js를 이용한 영화정보 반응형 사이트
 
-### URL:https://movie-dog.vercel.app/
+### URL:[https://main.drpe221ejddia.amplifyapp.com/](https://main.drpe221ejddia.amplifyapp.com/)
 
 ## 🎞️ 프로젝트 소개
 
@@ -37,7 +37,7 @@ React + Next.js를 이용한 영화정보 반응형 사이트
 - Swiper.js를 이용해 영화 정보를 간략히 확인하고 해당 영화의 상세정보 페이지로 이동할 수 있습니다.
 - 한 줄 평에서는 유저들이 남긴 리뷰를 확인할 수 있습니다.
 - 로그인시 마이페이지 메뉴가 나타납니다.
-  
+
 ### 회원가입
 
 ![회원가입1](https://github.com/movie-dog/movie-dog/assets/107671084/7969e507-c7c7-4aa7-8203-db51f1aca778)
@@ -48,7 +48,7 @@ React + Next.js를 이용한 영화정보 반응형 사이트
 - 이메일/비밀번호 회원가입이 가능하며 파이어베이스 authentication을 사용했습니다.
 - gamil.com으로 끝나는 아이디는 구글 로그인을 하도록 메세지를 추가했습니다.
 - 깃허브와 구글계정으로 소셜로그인이 가능합니다.
-  
+
 ### 로그인
 
 ![일반로그인](https://github.com/movie-dog/movie-dog/assets/107671084/a7e2d110-2278-4a06-b8bd-24b2276f6e2e)
@@ -56,7 +56,6 @@ React + Next.js를 이용한 영화정보 반응형 사이트
 
 - 소셜로그인(깃허브, 구글로그인)과 이메일/비밀번호 방식으로 로그인 할 수 있습니다.
 
-  
 ### 영화 장르별 카테고리 페이지
 
 ![무비독 장르카테고리 페이지](https://github.com/movie-dog/movie-dog/assets/76080643/7c7358ca-264a-4262-80cd-c1e2f7c762a6)
@@ -88,6 +87,7 @@ React + Next.js를 이용한 영화정보 반응형 사이트
 - 해당되는 영화 정보가 없을 경우 사용자에게 안내합니다.
 
 ### 마이페이지
+
 ![찜과 한줄평 없을때](https://github.com/movie-dog/movie-dog/assets/107671084/30035b63-854d-4be3-a97b-0c7208a9e149)
 ![좋아요 마이페이지](https://github.com/movie-dog/movie-dog/assets/107671084/c05e87c1-925a-4952-817a-22c90d344d8e)
 ![리뷰 마이페이지](https://github.com/movie-dog/movie-dog/assets/107671084/a1455075-a3a9-4e57-8fa2-4e99d33e047e)
@@ -98,4 +98,3 @@ React + Next.js를 이용한 영화정보 반응형 사이트
 - 유져의 카드에는 찜 한 영화와 작성한 리뷰의 개수를 나타냅니다.
 - 나의 선호 장르에는 찜한 영화와 작성한 리뷰를 바탕으로 선호하는 장르를 산출합니다.
 - 각 목록에는 좋아요를 누른 영화의 목록이 8개씩, 작성한 리뷰들은 4개씩 렌더링 됩니다.
-
