@@ -3,6 +3,7 @@
 React + Next.js를 이용한 영화정보 반응형 사이트
 
 ### URL:[https://main.drpe221ejddia.amplifyapp.com/](https://main.drpe221ejddia.amplifyapp.com/)
+(배포 이슈로 vercel에서 amplify로 서비스 변경하였습니다.)
 
 ## 🎞️ 프로젝트 소개
 
