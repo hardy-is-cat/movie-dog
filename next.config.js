@@ -26,7 +26,7 @@ const nextConfig = {
         destination: `/list/year/${currentYear}`,
         permanent: true,
       },
-    ]
+    ];
   },
   async rewrites() {
     return [

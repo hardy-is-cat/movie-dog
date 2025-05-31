@@ -2,33 +2,10 @@ import Link from 'next/link';
 
 import styled from 'styled-components';
 
-import { genreArr } from '@/pages/api/data';
+import { MovieDetailType } from '@/utils/type/MovieType';
+import findGenre from '@/utils/findGenre';
 
-type MovieTypes = {
-  movie: {
-    id: number;
-    backdrop_path: string;
-    genre_ids: number[];
-    overview: string;
-    title: string;
-    original_title: string;
-  };
-};
-
-function MainVisual({ movie }: MovieTypes) {
-  const findGenreName = () => {
-    const genreList = [];
-    if (movie.genre_ids[0]) {
-      for (let i = 0; i < movie.genre_ids.length; i++) {
-        const correctGenre = genreArr.filter(
-          (item) => +Object.keys(item)[0] === movie.genre_ids[i],
-        );
-        genreList.push(Object.values(correctGenre[0])[0]);
-      }
-    }
-    return genreList;
-  };
-
+function MainVisual({ movie }: { movie: MovieDetailType }) {
   return (
     <>
       <ImageBGBlock backdrop={movie.backdrop_path}>
@@ -36,8 +13,9 @@ function MainVisual({ movie }: MovieTypes) {
           <DescriptionBlock>
             <h3>{movie.title}</h3>
             <p>
-              {findGenreName()[0] ? findGenreName()[0] : '장르 분류 없음'}
-              {findGenreName()[1] ? '・' + findGenreName()[1] : ''}
+              {findGenre(movie.genre_ids).length === 0
+                ? '장르 분류 없음'
+                : findGenre(movie.genre_ids).join(' ・ ')}
             </p>
             <p>
               {movie.overview.split(' ', 40).length === 40
@@ -56,7 +34,7 @@ function MainVisual({ movie }: MovieTypes) {
 
 export default MainVisual;
 
-const ImageBGBlock = styled.div<{ backdrop: string }>`
+const ImageBGBlock = styled.div<{ backdrop: string | null }>`
   height: 600px;
   background-image: ${({ backdrop }) => {
     return `url(http://image.tmdb.org/t/p/w1280${backdrop})`;

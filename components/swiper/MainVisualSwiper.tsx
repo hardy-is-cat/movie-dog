@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import styled from 'styled-components';
 
@@ -12,37 +12,16 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import PageNavigatorButton from '../buttons/PageNavigatorButton';
 import MainVisual from '../MainVisual';
 
-import { options } from '@/pages/api/data';
+import { MovieDetailType } from '@/utils/type/MovieType';
 
 type SwiperTypes = {
+  data: MovieDetailType[];
   className?: string;
 };
 
-type MainVisualInfoTypes = {
-  adult: boolean;
-  backdrop_path: string;
-  genre_ids: number[];
-  overview: string;
-  title: string;
-};
-
-function MainVisualSwiper({ className }: SwiperTypes) {
-  const [movieData, setMovieData] = useState([]);
-
+function MainVisualSwiper({ data, className }: SwiperTypes) {
   const prevButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
-
-  const getMovieDB = async () => {
-    const response = await fetch(
-      'https://api.themoviedb.org/3/movie/now_playing?language=ko-KR&page=1',
-      options,
-    );
-    const json = await response.json();
-    const fileredResult = json.results.filter(
-      (item: MainVisualInfoTypes) => item.overview !== '',
-    );
-    setMovieData(fileredResult.slice(0, 6));
-  };
 
   const swiperOptions = {
     modules: [Navigation, Pagination],
@@ -75,14 +54,10 @@ function MainVisualSwiper({ className }: SwiperTypes) {
     },
   };
 
-  useEffect(() => {
-    getMovieDB();
-  }, []);
-
   return (
     <SwiperBlock {...swiperOptions} className={className}>
-      {movieData &&
-        movieData.map((movie, i) => {
+      {data &&
+        data.slice(0, 5).map((movie, i) => {
           return (
             <SwiperSlide key={i}>
               <MainVisual movie={movie} />
