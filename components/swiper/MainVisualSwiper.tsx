@@ -12,10 +12,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import PageNavigatorButton from '../buttons/PageNavigatorButton';
 import MainVisual from '../MainVisual';
 
-import { MovieDetailType } from '@/utils/type/MovieType';
+import { MovieListsDetailType } from '@/utils/type/MovieType';
 
 type SwiperTypes = {
-  data: MovieDetailType[];
+  data: MovieListsDetailType[];
   className?: string;
 };
 

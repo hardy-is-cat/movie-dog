@@ -13,15 +13,10 @@ import styled from 'styled-components';
 
 import ConfirmButton from '../buttons/ConfirmButton';
 import StarRating from '../StarRating';
+import { MovieDetailType } from '@/utils/type/MovieType';
 
 type ReviewModalTypes = {
-  movieData: {
-    id: number;
-    title: string;
-    genres: { name: string; id: number }[];
-    poster_path: string;
-    release_date: string;
-  };
+  movieDetailData: MovieDetailType;
   setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -34,14 +29,14 @@ type ExistReviewTypes = {
   userNickName: string;
 };
 
-function ReviewModal({ movieData, setIsOpened }: ReviewModalTypes) {
+function ReviewModal({ movieDetailData, setIsOpened }: ReviewModalTypes) {
   const {
     id: movieId,
     title: movieTitle,
     genres,
     poster_path,
     release_date,
-  } = movieData;
+  } = movieDetailData;
   const [reviewText, setReviewText] = useState('');
   const [reviewRating, setReviewRating] = useState(0);
   const [existReview, setExistReview] = useState<ExistReviewTypes>();
@@ -138,8 +133,7 @@ function ReviewModal({ movieData, setIsOpened }: ReviewModalTypes) {
 
   useEffect(() => {
     if (localStorage.getItem('userData')) loadExistReview();
-    console.log(movieId);
-  }, [movieData, movieId]);
+  }, [movieDetailData, movieId]);
 
   return (
     <>

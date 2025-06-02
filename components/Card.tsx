@@ -6,10 +6,10 @@ import StarRating from './StarRating';
 import NoPosterIcon from '../public/images/icons/icon_errorface.svg';
 
 import findGenre from '@/utils/findGenre';
-import { MovieDetailType } from '@/utils/type/MovieType';
+import { MovieListsDetailType } from '@/utils/type/MovieType';
 
 type MovieTypes = {
-  movie: MovieDetailType;
+  movie: MovieListsDetailType;
   ranking: boolean | number;
 };
 
@@ -19,7 +19,7 @@ function Card({ movie, ranking }: MovieTypes) {
   return (
     <>
       {movie && (
-        <Link href={`/detail/${movie.title}/${movie.id}`}>
+        <Link href={`/detail/${movie.id}`}>
           <CardBlock>
             {ranking && <RankingTag>{ranking}</RankingTag>}
             {movie.poster_path ? (

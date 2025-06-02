@@ -7,19 +7,15 @@ import styled from 'styled-components';
 import MovieSwiper from '@/components/swiper/MovieSwiper';
 import ReviewSwiper from '@/components/swiper/ReviewSwiper';
 import MainVisualSwiper from '@/components/swiper/MainVisualSwiper';
-import { MovieDetailType } from '@/utils/type/MovieType';
+import { MovieListsDetailType } from '@/utils/type/MovieType';
 import { getMovieList } from '@/utils/fetchMovie';
 
 export default function Home({
   nowPlayingList,
-  popularList,
   topRatedList,
-  similarList,
 }: {
-  nowPlayingList: MovieDetailType[];
-  popularList: MovieDetailType[];
-  topRatedList: MovieDetailType[];
-  similarList: MovieDetailType[];
+  nowPlayingList: MovieListsDetailType[];
+  topRatedList: MovieListsDetailType[];
 }) {
   return (
     <>
@@ -45,14 +41,11 @@ export default function Home({
 }
 
 export const getServerSideProps = async () => {
-  const [nowPlayingList, popularList, topRatedList, similarList] =
-    await Promise.all([
-      getMovieList('now_playing'),
-      getMovieList('popular'),
-      getMovieList('top_rated'),
-      getMovieList('similar', 552524),
-    ]);
-  return { props: { nowPlayingList, popularList, topRatedList, similarList } };
+  const [nowPlayingList, popularList] = await Promise.all([
+    getMovieList('now_playing'),
+    getMovieList('top_rated'),
+  ]);
+  return { props: { nowPlayingList, popularList } };
 };
 
 const WapperBlock = styled.div`

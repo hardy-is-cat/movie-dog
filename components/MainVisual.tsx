@@ -2,10 +2,10 @@ import Link from 'next/link';
 
 import styled from 'styled-components';
 
-import { MovieDetailType } from '@/utils/type/MovieType';
+import { MovieListsDetailType } from '@/utils/type/MovieType';
 import findGenre from '@/utils/findGenre';
 
-function MainVisual({ movie }: { movie: MovieDetailType }) {
+function MainVisual({ movie }: { movie: MovieListsDetailType }) {
   return (
     <>
       <ImageBGBlock backdrop={movie.backdrop_path}>
