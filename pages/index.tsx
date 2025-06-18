@@ -7,21 +7,31 @@ import styled from 'styled-components';
 import MovieSwiper from '@/components/swiper/MovieSwiper';
 import ReviewSwiper from '@/components/swiper/ReviewSwiper';
 import MainVisualSwiper from '@/components/swiper/MainVisualSwiper';
+import { MovieListsDetailType } from '@/utils/type/MovieType';
+import { getMovieList } from '@/utils/fetchMovie';
 
-export default function Home() {
+export default function Home({
+  nowPlayingList,
+  popularList,
+  topRatedList,
+}: {
+  nowPlayingList: MovieListsDetailType[];
+  popularList: MovieListsDetailType[];
+  topRatedList: MovieListsDetailType[];
+}) {
   return (
     <>
       <WapperBlock>
         <section>
-          <MainVisualSwiper />
+          <MainVisualSwiper data={nowPlayingList} />
         </section>
         <section>
           <TitleBlock>박스오피스</TitleBlock>
-          <MovieSwiper urlKey="popular" ranking={true} />
+          <MovieSwiper data={popularList} ranking={true} />
         </section>
         <section>
           <TitleBlock>최고평점</TitleBlock>
-          <MovieSwiper urlKey="topRated" ranking={false} />
+          <MovieSwiper data={topRatedList} ranking={false} />
         </section>
         <section>
           <TitleBlock>유저 한 줄 평</TitleBlock>
@@ -31,6 +41,15 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps = async () => {
+  const [nowPlayingList, popularList, topRatedList] = await Promise.all([
+    getMovieList('now_playing'),
+    getMovieList('popular'),
+    getMovieList('top_rated'),
+  ]);
+  return { props: { nowPlayingList, popularList, topRatedList } };
+};
 
 const WapperBlock = styled.div`
   max-width: 1200px;

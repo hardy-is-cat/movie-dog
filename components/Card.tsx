@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
@@ -7,44 +6,20 @@ import StarRating from './StarRating';
 import NoPosterIcon from '../public/images/icons/icon_errorface.svg';
 
 import findGenre from '@/utils/findGenre';
+import { MovieListsDetailType } from '@/utils/type/MovieType';
 
 type MovieTypes = {
-  movie: {
-    id: number;
-    title: string;
-    vote_average: number;
-    vote_count: number;
-    release_date: string;
-    poster_path: string;
-    genre_ids: number[];
-  };
+  movie: MovieListsDetailType;
   ranking: boolean | number;
 };
 
 function Card({ movie, ranking }: MovieTypes) {
-  const [displayRanking, setDisplayRanking] = useState(false);
-  const genre = findGenre(movie.genre_ids)[0];
-
-  const isRankingLessThan10 = () => {
-    if (typeof ranking === 'number' && ranking <= 10) {
-      setDisplayRanking(true);
-    }
-  };
-
-  useEffect(() => {
-    isRankingLessThan10();
-  }, []);
-
   return (
     <>
       {movie && (
-        <Link href={`/detail/${movie.title}/${movie.id}`}>
+        <Link href={`/detail/${movie.id}`}>
           <CardBlock>
-            {displayRanking && (
-              <RankingTag>
-                {typeof ranking === 'number' && ranking + 1}
-              </RankingTag>
-            )}
+            {ranking && <RankingTag>{ranking}</RankingTag>}
             {movie.poster_path ? (
               <ImageBlock>
                 <Image
@@ -69,7 +44,7 @@ function Card({ movie, ranking }: MovieTypes) {
               {movie.release_date
                 ? movie.release_date.slice(0, 4)
                 : '개봉일 정보 없음'}
-              ・{genre || '장르 분류 없음'}
+              ・{findGenre(movie.genre_ids)[0] || '장르 분류 없음'}
             </p>
             <RatingBlock>
               <StarRating

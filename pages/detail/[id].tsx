@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import type { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/fbase';
@@ -16,7 +16,16 @@ import StarRating from '@/components/StarRating';
 
 import useModal from '@/utils/useModal';
 
-import { options } from '../api/data';
+import {
+  getMovieCredits,
+  getMovieDetail,
+  getMovieList,
+} from '@/utils/fetchMovie';
+import {
+  MovieCreditsType,
+  MovieDetailType,
+  MovieListsDetailType,
+} from '@/utils/type/MovieType';
 
 type LikedMovieTypes = {
   genres: { name: string; id: number }[];
@@ -26,87 +35,23 @@ type LikedMovieTypes = {
   release_date: string;
 };
 
-type MovieDataTypes = {
-  id: number;
-  title: string;
-  original_title: string;
-  genres: { name: string; id: number }[];
-  overview: string;
-  backdrop_path: string;
-  poster_path: string;
-  release_date: string;
-  runtime: number;
-  vote_average: number;
-  vote_count: number;
-};
-
-type CreditDataTypes = {
-  cast: [{ name: string }];
-  director: { name: string };
-};
-
 function Detail({
-  params,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  movieId,
+  movieDetail,
+  similarList,
+  credits,
+}: {
+  movieId: string;
+  movieDetail: MovieDetailType;
+  similarList: MovieListsDetailType[];
+  credits: MovieCreditsType;
+}) {
   const auth = getAuth();
   const uid = auth.currentUser?.uid;
-  const [, movieId] = params.params;
-
-  const [movieData, setMovieData] = useState<MovieDataTypes | null>(null);
-  const [creditData, setCreditData] = useState<CreditDataTypes | null>(null);
-
   const { modal: reviewModal, toggleModal: toggleReviewModal } =
     useModal('reviewModal');
   const [isLiked, setIsliked] = useState(false);
   const [likedMovies, setLikedMovies] = useState<LikedMovieTypes[]>([]);
-
-  const getMovieDB = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}?language=ko-KR`,
-      options,
-    );
-    const json = await response.json();
-    const {
-      id,
-      title,
-      original_title,
-      genres,
-      overview,
-      backdrop_path,
-      poster_path,
-      release_date,
-      runtime,
-      vote_average,
-      vote_count,
-    } = json;
-    setMovieData({
-      id,
-      title,
-      original_title,
-      genres,
-      overview,
-      backdrop_path,
-      poster_path,
-      release_date,
-      runtime,
-      vote_average,
-      vote_count,
-    });
-  };
-
-  const getCreditList = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/credits?language=ko-KR`,
-      options,
-    );
-    const json = await response.json();
-    const actorList = json.cast.slice(0, 8);
-    const directorObject = json.crew.find((item: any) => {
-      return Object.keys(item).find((key) => item[key] === 'Director');
-    });
-    const { name: directorName } = directorObject;
-    setCreditData({ cast: actorList, director: directorName });
-  };
 
   const handleReviewButton = () => {
     if (localStorage.getItem('userData')) {
@@ -120,13 +65,10 @@ function Detail({
     if (uid) {
       const docSnap = await getDoc(doc(db, 'likes', uid));
       const likedMoviesData = docSnap.data()?.likedMovies || [];
-
       setLikedMovies(likedMoviesData);
-
       const isMovieLiked = likedMoviesData.some(
         (item: any) => item.movieId === +movieId,
       );
-
       setIsliked(isMovieLiked);
     }
   };
@@ -147,11 +89,11 @@ function Detail({
             likedMovies: [
               ...likedMovies,
               {
-                genres: movieData?.genres,
-                movieId: movieData?.id,
-                movieTitle: movieData?.title,
-                poster_path: movieData?.poster_path,
-                release_date: movieData?.release_date,
+                genres: movieDetail?.genres,
+                movieId: movieDetail?.id,
+                movieTitle: movieDetail?.title,
+                poster_path: movieDetail?.poster_path,
+                release_date: movieDetail?.release_date,
               },
             ],
           });
@@ -159,11 +101,11 @@ function Detail({
           await setDoc(doc(db, 'likes', uid), {
             likedMovies: [
               {
-                genres: movieData?.genres,
-                movieId: movieData?.id,
-                movieTitle: movieData?.title,
-                poster_path: movieData?.poster_path,
-                release_date: movieData?.release_date,
+                genres: movieDetail?.genres,
+                movieId: movieDetail?.id,
+                movieTitle: movieDetail?.title,
+                poster_path: movieDetail?.poster_path,
+                release_date: movieDetail?.release_date,
               },
             ],
           });
@@ -176,22 +118,18 @@ function Detail({
     }
   };
 
-  useEffect(() => {
-    getMovieDB();
-    getCreditList();
-  }, [params]);
-
   // 새로고침해도 찜한 영화정보를 불러오는 로직
   useEffect(() => {
     const fetchData = async () => {
       await isLikedMovie();
     };
     fetchData();
-  }, [uid, movieId, isLiked]);
+    // }, [uid, movieId, isLiked]);
+  }, [uid, isLiked]);
 
   return (
     <>
-      {movieData && (
+      {movieDetail && (
         <ContentBlock>
           <Modal
             setIsOpened={() => toggleReviewModal(reviewModal.isOpened)}
@@ -199,22 +137,22 @@ function Detail({
           >
             <ReviewModal
               setIsOpened={() => toggleReviewModal(reviewModal.isOpened)}
-              movieData={movieData}
+              movieDetailData={movieDetail}
             />
           </Modal>
           <DetailBlock>
             <PosterBlock>
               <Image
-                src={`http://image.tmdb.org/t/p/w500${movieData.poster_path}`}
-                alt={`${movieData.title}의 포스터`}
+                src={`http://image.tmdb.org/t/p/w500${movieDetail.poster_path}`}
+                alt={`${movieDetail.title}의 포스터`}
                 fill
                 sizes="(max-width: 768px) 50vw,(max-width: 1200px) 70vw"
                 priority
                 className="pc-tablet-img"
               />
               <Image
-                src={`http://image.tmdb.org/t/p/w500${movieData.backdrop_path}`}
-                alt={`${movieData.title}의 스틸컷`}
+                src={`http://image.tmdb.org/t/p/w500${movieDetail.backdrop_path}`}
+                alt={`${movieDetail.title}의 스틸컷`}
                 fill
                 sizes="(max-width: 768px) 50vw,(max-width: 1200px) 70vw"
                 priority
@@ -222,31 +160,35 @@ function Detail({
               />
             </PosterBlock>
             <InfoBlock>
-              <h1>{movieData.title}</h1>
-              <p className="english-title">{movieData.original_title}</p>
+              <h1>{movieDetail.title}</h1>
+              <p className="english-title">{movieDetail.original_title}</p>
               <RatingBlock>
                 <StarRating
-                  rating={Math.floor(movieData.vote_average)}
+                  rating={Math.floor(movieDetail.vote_average)}
                   starSize={24}
                 />
                 <span>
-                  {Math.floor((movieData.vote_average / 2) * 10) / 10 + '점'}(
-                  {movieData.vote_count.toLocaleString() + '명 / TMBD 기준'})
+                  {Math.floor((movieDetail.vote_average / 2) * 10) / 10 + '점'}(
+                  {movieDetail.vote_count.toLocaleString() + '명 / TMBD 기준'})
                 </span>
               </RatingBlock>
               <p>
-                {movieData.release_date + ' 개봉'}・{movieData.runtime + '분'}・
-                {movieData.genres.map(
+                {movieDetail.release_date + ' 개봉'}・
+                {movieDetail.runtime + '분'}・
+                {movieDetail.genres.map(
                   (genre, i) =>
                     genre.name +
-                    (i !== movieData.genres.length - 1 ? ', ' : ''),
+                    (i !== movieDetail.genres.length - 1 ? ', ' : ''),
                 )}
               </p>
-              <p>{'감독 : ' + creditData?.director}</p>
               <p>
-                {`출연 : ${creditData?.cast.map((item) => ' ' + item.name)}`}
+                {'감독 : ' +
+                  credits.crew.find((person) => {
+                    return person.known_for_department === 'Directing';
+                  })?.name || '이름없음'}
               </p>
-              <p>{movieData.overview}</p>
+              <p>{`출연 : ${credits?.cast.slice(0, 5).map((item) => ' ' + item.name)}`}</p>
+              <p style={{ wordBreak: 'keep-all' }}>{movieDetail.overview}</p>
               <div className="buttons">
                 <ConfirmButton
                   text={isLiked ? '찜 해제' : '찜하기'}
@@ -263,15 +205,11 @@ function Detail({
           </DetailBlock>
           <section>
             <h2>유저 한 줄 평</h2>
-            <MovieReviewSwiper movieId={movieData.id} />
+            <MovieReviewSwiper movieId={movieDetail.id} />
           </section>
           <section>
             <h2>비슷한 영화</h2>
-            <MovieSwiper
-              movieId={movieData.id}
-              urlKey="similar"
-              ranking={false}
-            />
+            <MovieSwiper data={similarList} ranking={false} />
           </section>
         </ContentBlock>
       )}
@@ -282,10 +220,18 @@ function Detail({
 export default Detail;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { params } = context;
-  return {
-    props: { params },
-  };
+  // params 속성이 없다면 404 페이지로 리다이렉트
+  if (!context.params) {
+    return { notFound: true };
+  }
+
+  const movieId = context.params.id as string;
+  const [movieDetail, similarList, credits] = await Promise.all([
+    getMovieDetail(movieId),
+    getMovieList('similar', +movieId),
+    getMovieCredits(movieId),
+  ]);
+  return { props: { movieId, movieDetail, similarList, credits } };
 };
 
 const ContentBlock = styled.div`

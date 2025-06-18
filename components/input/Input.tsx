@@ -1,12 +1,10 @@
 import theme from '@/styles/theme';
 import styled from 'styled-components';
 
-import {
-  ErrorRounded,
-  InfoRounded,
-  WarningRounded,
-  CheckCircleRounded,
-} from '@mui/icons-material';
+import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
 type InputTypes = {
   type?: string;
@@ -30,10 +28,10 @@ function Input({
   onChange,
 }: InputTypes) {
   const helperIcon: { [key: string]: JSX.Element } = {
-    error: <ErrorRounded />,
-    warning: <WarningRounded />,
-    correct: <CheckCircleRounded />,
-    info: <InfoRounded />,
+    error: <ErrorRoundedIcon />,
+    warning: <WarningRoundedIcon />,
+    correct: <CheckCircleRoundedIcon />,
+    info: <InfoRoundedIcon />,
   };
 
   return (

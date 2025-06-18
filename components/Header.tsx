@@ -23,7 +23,7 @@ import Modal from './modal/Modal';
 
 export function Header() {
   const router = useRouter();
-  
+
   const [isTabBarShowing, setIsTabBarShowing] = useState(true);
   const { modal: searchModal, toggleModal: toggleSearchModal } =
     useModal('searchModal');
@@ -69,9 +69,9 @@ export function Header() {
       window.localStorage.removeItem('userData');
       setIsLogin(false);
       authService.signOut();
-      if(router.pathname === "/mypage"){
-        router.push('/')
-      }else{
+      if (router.pathname === '/mypage') {
+        router.push('/');
+      } else {
         location.reload();
       }
     }
@@ -97,10 +97,12 @@ export function Header() {
           <nav className="pc-nav">
             <ul>
               <ListItem>
-                <Link href="/list/genre/28">장르별</Link>
+                <Link href="/list/genre/12?page=1">장르별</Link>
               </ListItem>
               <ListItem>
-                <Link href={`/list/year/${currentYear}`}>년도별</Link>
+                <Link href={'/list/year?startYear=2020&endYear=2025&page=1'}>
+                  년도별
+                </Link>
               </ListItem>
               {isLogin && (
                 <ListItem>
@@ -133,7 +135,7 @@ export function Header() {
       <TabBarBlock className={isTabBarShowing ? '' : 'hide'}>
         <ul>
           <li className={router.pathname === '/' ? 'active' : ''}>
-            <Link href="/list/genre/28">
+            <Link href="/list/genre/12?page=1">
               <MenuRoundedIcon fontSize="large" />
               <span>장르별</span>
             </Link>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import styled from 'styled-components';
 
@@ -12,48 +12,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import PageNavigatorButton from '../buttons/PageNavigatorButton';
 import Card from '../Card';
 
-import { options } from '@/pages/api/data';
-
-const movieListUrl = {
-  popular: 'https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1',
-  topRated:
-    'https://api.themoviedb.org/3/movie/top_rated?language=ko-KR&page=1',
-  upcoming: 'https://api.themoviedb.org/3/movie/upcoming?language=ko-KR&page=1',
-  similar:
-    'https://api.themoviedb.org/3/movie/movieId/similar?language=ko-KR&page=1',
-} as const;
-
-type APICallType = keyof typeof movieListUrl;
+import { MovieListsDetailType } from '@/utils/type/MovieType';
 
 type SwiperTypes = {
-  urlKey: APICallType;
+  data: MovieListsDetailType[];
   ranking: boolean;
   className?: string;
-  movieId?: number;
 };
 
-function MovieSwiper({ urlKey, ranking, className, movieId }: SwiperTypes) {
-  const [movieData, setMovieData] = useState([]);
-
+function MovieSwiper({ data, ranking, className }: SwiperTypes) {
   const prevButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
-
-  const getMovieDB = async () => {
-    if (urlKey === 'similar' && movieId) {
-      const similarAPIKey = movieListUrl[urlKey].replace(
-        'movieId',
-        `${movieId}`,
-      );
-      const response = await fetch(similarAPIKey, options);
-      const json = await response.json();
-      setMovieData(json.results);
-      return;
-    }
-
-    const response = await fetch(movieListUrl[urlKey], options);
-    const json = await response.json();
-    setMovieData(json.results);
-  };
 
   const swiperOptions = {
     modules: [Navigation],
@@ -87,17 +56,13 @@ function MovieSwiper({ urlKey, ranking, className, movieId }: SwiperTypes) {
     },
   };
 
-  useEffect(() => {
-    getMovieDB();
-  }, [movieId]);
-
   return (
     <SwiperBlock {...swiperOptions} className={className}>
-      {movieData &&
-        movieData.map((movie, i) => {
+      {data &&
+        data.map((movie, i) => {
           return (
-            <SwiperSlide key={i}>
-              <Card movie={movie} ranking={ranking && i} />
+            <SwiperSlide key={movie.id}>
+              <Card movie={movie} ranking={ranking && i < 10 && i + 1} />
             </SwiperSlide>
           );
         })}

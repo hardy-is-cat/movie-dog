@@ -1,34 +1,23 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import GenreSideBar from '@/components/GenreSideBar';
+import SideBar from '@/components/SideBar';
 import CardList from '@/container/CardList';
 
+import { getDiscoverMovie } from '@/utils/fetchMovie';
+
 function CategoryList({
-  params,
+  movieList,
+  currentPage,
+  totalPages,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [genreId, setGenreId] = useState(params.params);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [offset, setOffset] = useState(1);
-
-  useEffect(() => {
-    // console.log('카테고리 페이지 리랜더링!');
-    setGenreId(params.params[0]);
-    setCurrentPage(1);
-    setOffset(1);
-    // console.log(currentPage);
-  }, [params.params]);
-
   return (
     <WrapperBlock>
-      <GenreSideBar genreId={genreId} setGenreId={setGenreId} />
+      <SideBar />
       <CardList
-        genreId={genreId}
         currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        offset={offset}
-        setOffset={setOffset}
+        totalPages={totalPages}
+        movieList={movieList}
       />
     </WrapperBlock>
   );
@@ -37,9 +26,22 @@ function CategoryList({
 export default CategoryList;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { params } = context;
+  // params 속성이 없다면 404 페이지로 리다이렉트
+  if (!context.params) {
+    return { notFound: true };
+  }
+
+  const currentPage = context.query.page || '1';
+  const genreId = context.params.genreId as string;
+
+  const data = await getDiscoverMovie('genre', +currentPage, genreId);
+
   return {
-    props: { params },
+    props: {
+      movieList: data!.results,
+      currentPage,
+      totalPages: data!.total_pages,
+    },
   };
 };
 
