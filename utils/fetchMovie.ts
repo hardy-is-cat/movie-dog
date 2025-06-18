@@ -49,6 +49,7 @@ async function getMovieList(
   }
 }
 
+// 영화 id로 상세정보 불러오는 함수
 async function getMovieDetail(
   movieId: string,
 ): Promise<MovieDetailType | undefined> {
@@ -59,6 +60,7 @@ async function getMovieDetail(
   return res.json();
 }
 
+// 영화 id로 출연진 불러오는 함수
 async function getMovieCredits(
   movieId: string,
 ): Promise<MovieCreditsType | undefined> {
@@ -69,4 +71,91 @@ async function getMovieCredits(
   return res.json();
 }
 
-export { getMovieList, getMovieDetail, getMovieCredits };
+/**
+ * 장르 혹은 시작~종료 년도로 영화를 검색할 때 API 요청 query를 생성하는 함수
+ * @function
+ * @param discoverWith "genre" 혹은 "year"로 설정하여 장르 검색이나 연도별 검색을 지정할 수 있음
+ * @param currentPage 표시해 줄 page를 설정, url에 있는 page 파라미터를 넣으면 됨
+ * @param genreId 장르 id
+ * @param startYear 시작년도
+ * @param endYear 종료년도
+ */
+function buildTMDBQuery(
+  discoverWith: 'genre',
+  currentPage: number,
+  genreId: string,
+): string;
+function buildTMDBQuery(
+  discoverWith: 'year',
+  currentPage: number,
+  startYear: string,
+  endYear: string,
+): string;
+function buildTMDBQuery(
+  discoverWith: 'genre' | 'year',
+  currentPage: number,
+  genreIdORStartYear: string,
+  endYear?: string,
+): string {
+  const query = new URLSearchParams({
+    'certification.gte': 'ALL',
+    'certification.lte': '19',
+    certification_country: 'KR',
+    include_adult: 'false',
+    include_video: 'false',
+    language: 'ko-KR',
+    sort_by: 'popularity.desc',
+  });
+
+  if (discoverWith === 'genre') {
+    query.set('with_genres', genreIdORStartYear);
+    query.set('page', currentPage.toString());
+  } else if (discoverWith === 'year') {
+    query.set('primary_release_date.gte', `${genreIdORStartYear}-01-01`);
+    query.set('primary_release_date.lte', `${endYear!}-12-31`);
+    query.set('page', currentPage.toString());
+  }
+
+  return query.toString();
+}
+
+function getDiscoverMovie(
+  discoverWith: 'genre',
+  currentPage: number,
+  genreId: string,
+): Promise<MovieListsType | undefined>;
+function getDiscoverMovie(
+  discoverWith: 'year',
+  currentPage: number,
+  startYear: string,
+  endYear: string,
+): Promise<MovieListsType | undefined>;
+async function getDiscoverMovie(
+  discoverWith: 'genre' | 'year',
+  currentPage: number,
+  genreIdORStartYear: string,
+  endYear?: string,
+): Promise<MovieListsType | undefined> {
+  if (discoverWith === 'genre') {
+    const genreQuery = buildTMDBQuery('genre', currentPage, genreIdORStartYear);
+    const res = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?${genreQuery}`,
+      options,
+    );
+    return res.json();
+  } else if (discoverWith === 'year') {
+    const yearQuery = buildTMDBQuery(
+      'year',
+      currentPage,
+      genreIdORStartYear,
+      endYear!,
+    );
+    const res = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?${yearQuery}`,
+      options,
+    );
+    return res.json();
+  }
+}
+
+export { getMovieList, getMovieDetail, getMovieCredits, getDiscoverMovie };

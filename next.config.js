@@ -3,6 +3,10 @@
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY_AUTH;
 const currentYear = new Date().getFullYear().toString();
 const nextConfig = {
+  swcMinify: true,
+  compiler: {
+    styledComponents: true,
+  },
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -18,15 +22,6 @@ const nextConfig = {
       use: ['@svgr/webpack'],
     });
     return config;
-  },
-  async redirects() {
-    return [
-      {
-        source: '/list/year',
-        destination: `/list/year/${currentYear}`,
-        permanent: true,
-      },
-    ];
   },
   async rewrites() {
     return [

@@ -14,8 +14,6 @@ type MovieTypes = {
 };
 
 function Card({ movie, ranking }: MovieTypes) {
-  const genre = findGenre(movie.genre_ids)[0];
-
   return (
     <>
       {movie && (

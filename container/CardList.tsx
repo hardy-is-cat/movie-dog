@@ -1,58 +1,32 @@
-import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import Card from '@/components/Card';
 import Pagination from '@/components/Pagination';
 
-import { options } from '@/pages/api/data';
-import styled from 'styled-components';
+import { MovieListsDetailType } from '@/utils/type/MovieType';
 
 type CardList = {
-  genreId: string;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-  offset: number;
-  setOffset: React.Dispatch<React.SetStateAction<number>>;
+  movieList: MovieListsDetailType[];
+  currentPage: string;
+  totalPages: number;
 };
 
-function CardList({
-  genreId,
-  currentPage,
-  setCurrentPage,
-  offset,
-  setOffset,
-}: CardList) {
-  const [movieData, setMovieData] = useState([]);
-  // const [currentPage, setCurrentPage] = useState(1);
-
-  const getMovieDB = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?include_adult=true&include_video=false&language=ko-KR&page=${currentPage}&sort_by=popularity.desc&with_genres=${genreId}`,
-      options,
-    );
-    const json = await response.json();
-    setMovieData(json.results);
-  };
-
-  useEffect(() => {
-    getMovieDB();
-    // setCurrentPage(1);
-    // console.log('카드 리스트 리랜더링!!!');
-  }, [genreId, currentPage]);
-
+function CardList({ movieList, currentPage, totalPages }: CardList) {
   return (
     <WrapperBlock>
       <CardListBlock>
-        {movieData &&
-          movieData.map((movie, i) => {
-            return <Card key={i} ranking={true} movie={movie} />;
+        {movieList &&
+          movieList.map((movie, i) => {
+            return (
+              <Card
+                key={movie.id}
+                ranking={currentPage === '1' && i + 1 < 11 ? i + 1 : false}
+                movie={movie}
+              />
+            );
           })}
       </CardListBlock>
-      <Pagination
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        offset={offset}
-        setOffset={setOffset}
-      />
+      <Pagination currentPage={+currentPage} totalPages={totalPages} />
     </WrapperBlock>
   );
 }

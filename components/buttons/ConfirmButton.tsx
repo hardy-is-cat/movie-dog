@@ -1,18 +1,16 @@
 import styled from 'styled-components';
 import GithubIcon from '../../public/images/icons/icon_github.svg';
 import GoogleIcon from '../../public/images/icons/icon_google.svg';
-import {
-  CreateRounded,
-  FavoriteBorderRounded,
-  FavoriteRounded,
-} from '@mui/icons-material';
+import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
+import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 
 const buttonIcons = {
   github: <GithubIcon />,
   google: <GoogleIcon />,
-  write: <CreateRounded />,
-  favorite: <FavoriteBorderRounded />,
-  'favorite-fill': <FavoriteRounded />,
+  write: <CreateRoundedIcon />,
+  favorite: <FavoriteBorderRoundedIcon />,
+  'favorite-fill': <FavoriteRoundedIcon />,
 } as const;
 
 type IconTypes = keyof typeof buttonIcons;

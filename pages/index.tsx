@@ -12,9 +12,11 @@ import { getMovieList } from '@/utils/fetchMovie';
 
 export default function Home({
   nowPlayingList,
+  popularList,
   topRatedList,
 }: {
   nowPlayingList: MovieListsDetailType[];
+  popularList: MovieListsDetailType[];
   topRatedList: MovieListsDetailType[];
 }) {
   return (
@@ -25,7 +27,7 @@ export default function Home({
         </section>
         <section>
           <TitleBlock>박스오피스</TitleBlock>
-          <MovieSwiper data={nowPlayingList} ranking={true} />
+          <MovieSwiper data={popularList} ranking={true} />
         </section>
         <section>
           <TitleBlock>최고평점</TitleBlock>
@@ -41,11 +43,12 @@ export default function Home({
 }
 
 export const getServerSideProps = async () => {
-  const [nowPlayingList, popularList] = await Promise.all([
+  const [nowPlayingList, popularList, topRatedList] = await Promise.all([
     getMovieList('now_playing'),
+    getMovieList('popular'),
     getMovieList('top_rated'),
   ]);
-  return { props: { nowPlayingList, popularList } };
+  return { props: { nowPlayingList, popularList, topRatedList } };
 };
 
 const WapperBlock = styled.div`
