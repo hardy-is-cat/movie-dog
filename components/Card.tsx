@@ -28,7 +28,7 @@ function Card({ movie, ranking }: MovieTypes) {
                   fill
                   sizes="(max-width: 768px) 50vw,(max-width: 1200px) 70vw"
                   loading="eager"
-                  priority
+                  priority={false}
                 />
               </ImageBlock>
             ) : (

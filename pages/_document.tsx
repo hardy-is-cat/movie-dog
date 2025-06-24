@@ -35,8 +35,9 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html lang="ko-KR">
         <Head>
+          <title>무비독 | Movie Dog</title>
           <link
             rel="stylesheet"
             as="style"

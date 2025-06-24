@@ -15,6 +15,7 @@ function MainVisual({ movie }: { movie: MovieListsDetailType }) {
         fill
         sizes="100vw"
         style={{ objectFit: 'cover' }}
+        priority
       />
       <OverlayBGBlock>
         <DescriptionBlock>
@@ -39,6 +40,7 @@ function MainVisual({ movie }: { movie: MovieListsDetailType }) {
 export default MainVisual;
 
 const MainVisualCardWrapper = styled.div`
+  position: relative;
   height: 600px;
 
   @media (min-width: 1200px) {

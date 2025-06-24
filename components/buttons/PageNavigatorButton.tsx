@@ -17,16 +17,15 @@ export default function PageNavigatorButton({
   className,
 }: NavigatorProps) {
   return (
-    <>
-      <NavigatorBox
-        ref={buttonRef}
-        onClick={onClick}
-        className={`${className} ${direction}-button`}
-      >
-        {direction === 'prev' && <ArrowBackIosRoundedIcon />}
-        {direction === 'next' && <ArrowForwardIosRoundedIcon />}
-      </NavigatorBox>
-    </>
+    <NavigatorBox
+      ref={buttonRef}
+      onClick={onClick}
+      className={`${className} ${direction}-button`}
+      aria-label={direction === 'prev' ? '이전 버튼' : '다음 버튼'}
+    >
+      {direction === 'prev' && <ArrowBackIosRoundedIcon />}
+      {direction === 'next' && <ArrowForwardIosRoundedIcon />}
+    </NavigatorBox>
   );
 }
 
