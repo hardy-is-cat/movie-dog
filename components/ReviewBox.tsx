@@ -21,7 +21,7 @@ function ReviewBox({ review }: ReviewBoxTypes) {
       <RatingComponentBlock rating={rating} starSize={24} />
       <p>{content}</p>
       <h3>
-        <Link href={`/detail/${movieTitle}/${movieId}`}>- {movieTitle}</Link>
+        <Link href={`/detail/${movieId}`}>- {movieTitle}</Link>
       </h3>
       <span>By {userNickName}</span>
       {/* <LikeButtonBlock count={like} /> */}

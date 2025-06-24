@@ -23,6 +23,15 @@ const nextConfig = {
     });
     return config;
   },
+  async redirects() {
+    return [
+      {
+        source: '/detail/:title/:id',
+        destination: '/detail/:id',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
