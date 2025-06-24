@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { authService } from '@/fbase';
 import { useRecoilState } from 'recoil';
@@ -18,7 +18,6 @@ import useModal from '@/utils/useModal';
 
 import ConfirmButton from './buttons/ConfirmButton';
 import SearchBar from './input/SearchBar';
-import ModeButton from './buttons/ModeButton';
 import Modal from './modal/Modal';
 
 export function Header() {
@@ -29,8 +28,6 @@ export function Header() {
     useModal('searchModal');
 
   const [isLogin, setIsLogin] = useRecoilState(LoginsState);
-
-  const currentYear = new Date().getFullYear().toString();
 
   const checkedLogin = () => {
     const isLogin = window.localStorage.getItem('userData');
@@ -129,7 +126,6 @@ export function Header() {
               />
             </>
           )}
-          <ModeButton mode="light" />
         </FlexContainer>
       </WrapperBlock>
       <TabBarBlock className={isTabBarShowing ? '' : 'hide'}>
