@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 import styled from 'styled-components';
 
@@ -7,41 +8,38 @@ import findGenre from '@/utils/findGenre';
 
 function MainVisual({ movie }: { movie: MovieListsDetailType }) {
   return (
-    <>
-      <ImageBGBlock backdrop={movie.backdrop_path}>
-        <OverlayBGBlock>
-          <DescriptionBlock>
-            <h3>{movie.title}</h3>
-            <p>
-              {findGenre(movie.genre_ids).length === 0
-                ? '장르 분류 없음'
-                : findGenre(movie.genre_ids).join(' ・ ')}
-            </p>
-            <p>
-              {movie.overview.split(' ', 40).length === 40
-                ? movie.overview.split(' ', 40).join(' ') + '...'
-                : movie.overview.split(' ', 40).join(' ')}
-            </p>
-            <Link href={`/detail/${movie.original_title}/${movie.id}`}>
-              상세정보
-            </Link>
-          </DescriptionBlock>
-        </OverlayBGBlock>
-      </ImageBGBlock>
-    </>
+    <MainVisualCardWrapper>
+      <Image
+        src={`http://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
+        alt={movie.title + '의 배경포스터'}
+        fill
+        sizes="100vw"
+        style={{ objectFit: 'cover' }}
+      />
+      <OverlayBGBlock>
+        <DescriptionBlock>
+          <h3>{movie.title}</h3>
+          <p>
+            {findGenre(movie.genre_ids).length === 0
+              ? '장르 분류 없음'
+              : findGenre(movie.genre_ids).join(' ・ ')}
+          </p>
+          <p>
+            {movie.overview.split(' ', 40).length === 40
+              ? movie.overview.split(' ', 40).join(' ') + '...'
+              : movie.overview.split(' ', 40).join(' ')}
+          </p>
+          <Link href={`/detail/${movie.id}`}>상세정보</Link>
+        </DescriptionBlock>
+      </OverlayBGBlock>
+    </MainVisualCardWrapper>
   );
 }
 
 export default MainVisual;
 
-const ImageBGBlock = styled.div<{ backdrop: string | null }>`
+const MainVisualCardWrapper = styled.div`
   height: 600px;
-  background-image: ${({ backdrop }) => {
-    return `url(http://image.tmdb.org/t/p/w1280${backdrop})`;
-  }};
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
 
   @media (min-width: 1200px) {
     height: 500px;
