@@ -88,8 +88,14 @@ const SwiperBlock = styled(Swiper)`
     visibility: hidden;
   }
 
+  .swiper-pagination-bullet {
+    background: ${({ theme }) => theme.colors.white};
+    opacity: 0.4;
+  }
+
   .swiper-pagination-bullet-active {
     background: ${({ theme }) => theme.colors.brown5};
+    opacity: 1;
   }
 `;
 

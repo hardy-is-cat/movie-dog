@@ -71,6 +71,17 @@ async function getMovieCredits(
   return res.json();
 }
 
+// 키워드로 영화 불러오는 함수
+async function searchMovieByKeyword(
+  keyword: string,
+): Promise<MovieListsType | undefined> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/search/movie?query=${keyword}&include_adult=false&certification.gte=ALL&certification.lte=19&language=ko-KR&page=1`,
+    options,
+  );
+  return res.json();
+}
+
 /**
  * 장르 혹은 시작~종료 년도로 영화를 검색할 때 API 요청 query를 생성하는 함수
  * @function
@@ -158,4 +169,10 @@ async function getDiscoverMovie(
   }
 }
 
-export { getMovieList, getMovieDetail, getMovieCredits, getDiscoverMovie };
+export {
+  getMovieList,
+  getMovieDetail,
+  getMovieCredits,
+  getDiscoverMovie,
+  searchMovieByKeyword,
+};

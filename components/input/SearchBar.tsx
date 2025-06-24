@@ -31,7 +31,7 @@ function SearchBar({ width = 100, className = 'SearchBar' }: SearchBarTypes) {
     if (inputRef.current!.value) {
       e.preventDefault();
       router.push({
-        pathname: `/search/[keyword]`,
+        pathname: `/search`,
         query: { keyword: inputRef.current!.value },
       });
       inputRef.current!.value = '';

@@ -1,42 +1,30 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import styled from 'styled-components';
 
-import Card from '@/components/Card';
+import CardList from '@/container/CardList';
 import MovieDogError from '../../public/images/moviedog-error.png';
-import { options } from '../api/data';
+import { searchMovieByKeyword } from '@/utils/fetchMovie';
 
 function SearchPage({
-  params,
+  keyword,
+  searchList,
+  currentpage,
+  totalPages,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { keyword } = params;
-  const [movieData, setMovieData] = useState([]);
-
-  const getMovieDB = async () => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${keyword}&include_adult=false&language=ko-KR&page=1`,
-      options,
-    );
-    const json = await response.json();
-    setMovieData(json.results);
-  };
-
-  useEffect(() => {
-    getMovieDB();
-  }, [keyword]);
-
   return (
     <>
       <KeywordWrapper>
         <h1>"{keyword}"의 검색결과</h1>
       </KeywordWrapper>
       <ResultCardsBlock>
-        {movieData[0] ? (
-          movieData.map((movie, i) => {
-            return <Card key={i} movie={movie} ranking={false} />;
-          })
+        {searchList[0] ? (
+          <CardList
+            movieList={searchList}
+            currentPage={currentpage}
+            totalPages={totalPages}
+          />
         ) : (
           <ErrorBlock>
             <Image
@@ -56,9 +44,17 @@ function SearchPage({
 export default SearchPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { params } = context;
+  const { keyword } = context.query;
+  let data;
+  if (!Array.isArray(keyword)) data = await searchMovieByKeyword(keyword!);
+
   return {
-    props: { params },
+    props: {
+      keyword,
+      searchList: data?.results,
+      currentpage: data?.page,
+      totalPages: data?.total_pages,
+    },
   };
 };
 
@@ -78,30 +74,9 @@ const KeywordWrapper = styled.div`
 `;
 
 const ResultCardsBlock = styled.section`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
   max-width: 1200px;
   padding: 100px 20px;
   margin: 0 auto;
-
-  & > a {
-    // width 계산 -> 100% / (한 줄  당 카드 갯수) - gap * (한 줄 당 카드 갯수 - 1) / 한 줄 당 카드 갯수
-    display: block;
-    width: calc(50% - 10px);
-  }
-
-  @media (min-width: 768px) {
-    & > a {
-      width: calc(25% - 15px);
-    }
-  }
-
-  @media (min-width: 1200px) {
-    & > a {
-      width: calc(20% - 16px);
-    }
-  }
 `;
 
 const ErrorBlock = styled.div`

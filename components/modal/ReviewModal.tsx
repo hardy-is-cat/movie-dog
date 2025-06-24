@@ -40,7 +40,7 @@ function ReviewModal({ movieDetailData, setIsOpened }: ReviewModalTypes) {
   const [reviewText, setReviewText] = useState('');
   const [reviewRating, setReviewRating] = useState(0);
   const [existReview, setExistReview] = useState<ExistReviewTypes>();
-  const uid = JSON.parse(localStorage.getItem('userData') || '{}').uid;
+  const [uid, setUid] = useState('{}');
 
   // textarea value 상태 관리
   const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -132,7 +132,10 @@ function ReviewModal({ movieDetailData, setIsOpened }: ReviewModalTypes) {
   };
 
   useEffect(() => {
-    if (localStorage.getItem('userData')) loadExistReview();
+    if (localStorage.getItem('userData')) {
+      loadExistReview();
+      setUid(JSON.parse(localStorage.getItem('userData') || '{}').uid);
+    }
   }, [movieDetailData, movieId]);
 
   return (
